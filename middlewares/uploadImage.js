@@ -44,7 +44,7 @@ const productImageResize = async (req, res, next) => {
         fs.unlinkSync(`public/images/products/${file.filename}`)
     })
   );
-  next()  
+  next()   
 }; 
   
 const blogImageResize = async (req, res, next) => {

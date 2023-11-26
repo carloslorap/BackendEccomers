@@ -2,12 +2,12 @@ const express = require('express')
 const router = express.Router()
 const {isAdmin,authMiddleware}=require('../middlewares/authMiddleware')
 const { createBlog, updateBlog, getBlog, getAllBlog, deleteBlog, likeBlog, dislikeBlog, uploadImages } = require('../controller/blogCtrl')
-const { blogImageResize, uploadPhoto } = require('../middlewares/UploadImage')
+const { blogImageResize, uploadPhoto } = require('../middlewares/uploadImage')
 
  
 
 router.post('/', authMiddleware,isAdmin,createBlog)
-router.put(
+router.put( 
     "/upload/:id",
     authMiddleware,
     isAdmin,
