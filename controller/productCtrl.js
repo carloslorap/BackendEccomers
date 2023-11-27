@@ -53,9 +53,14 @@ const getProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     const findProduct = await Product.findById(id).populate("color");
+    if (!findProduct) {
+      res.status(404).json({ error: 'Producto no encontrado' });
+      return;
+    }
     res.json(findProduct);
   } catch (error) {
-    throw new Error(error);
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener el producto' });
   }
 });
 
@@ -82,7 +87,7 @@ const getAllProduct = asyncHandler(async (req, res) => {
       const fields = req.query.fields.split(",").join(" ");
       query = query.select(fields);
     } else {
-      query = query.select("-__v");
+      query = query.select("-__v"); 
     }
 
     //pagination
