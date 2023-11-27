@@ -9,10 +9,10 @@ const { blogImageResize, uploadPhoto } = require('../middlewares/uploadImage')
 router.post('/', authMiddleware,isAdmin,createBlog)
 router.put( 
     "/upload/:id",
-    authMiddleware,
+    authMiddleware, 
     isAdmin,
     uploadPhoto.array('images', 2),
-    blogImageResize,
+    blogImageResize, 
     uploadImages
   );
 router.put('/likes', authMiddleware,likeBlog)

@@ -22,4 +22,4 @@ router.delete("/:id", authMiddleware, isAdmin, deleteProduct);
 
 
 module.exports = router;
-   
+    
