@@ -1,9 +1,9 @@
 const cloudinary = require("cloudinary");
 
 cloudinary.config({
-  cloud_name: "dt8j3ym7y",
-  api_key: "948722834771962",
-  api_secret: "WNm3CGr-7y0oy3taNjA5scrYTNQ",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 const cloudinaryUploadImg = async (fileToUploads) => {
@@ -23,7 +23,7 @@ const cloudinaryUploadImg = async (fileToUploads) => {
   });
 };
 
-const cloudinaryDeleteImg = async (fileToDelete) => {
+const cloudinaryDeleteImg = async (fileToDelete) => { 
   return new Promise((resolve) => {
     cloudinary.uploader.destroy(fileToDelete, (result) => {
       resolve(
