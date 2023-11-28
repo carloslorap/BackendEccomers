@@ -34,29 +34,18 @@ const uploadPhoto = multer({
 
 const productImageResize = async (req, res, next) => {
   if (!req.files) return next();
-  try {
-    await Promise.all(
-      req.files.map(async (file) => {
-        const outputDirectory = `public/images/products/`;
-        if (!fs.existsSync(outputDirectory)) {
-          fs.mkdirSync(outputDirectory, { recursive: true });
-        }
-
-        await sharp(file.path)
-          .resize(300, 300)
-          .toFormat("jpeg")
-          .jpeg({ quality: 90 })
-          .toFile(`${outputDirectory}${file.filename}`);
-
-        fs.unlinkSync(file.path);
-      })
-    );
-    next();
-  } catch (error) {
-    console.error("Error en productImageResize:", error.message);
-    next(error);
-  }
-};
+  await Promise.all(
+    req.files.map(async (file) => {
+      await sharp(file.path)
+        .resize(300, 300)
+        .toFormat("jpeg")
+        .jpeg({ quality: 90 })
+        .toFile(`public/images/products/${file.filename}`);
+        fs.unlinkSync(`public/images/products/${file.filename}`)
+    })
+  );
+  next()   
+}; 
   
 const blogImageResize = async (req, res, next) => {
     if (!req.files) return next(); 
