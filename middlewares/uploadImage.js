@@ -29,23 +29,32 @@ const multerFilter = (req, file, cb) => {
 const uploadPhoto = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
-  limits: { fieldSize: 1000000 },
+  limits: { fileSize: 1000000 },  // Cambiado de fieldSize a fileSize
 });
-
 const productImageResize = async (req, res, next) => {
   if (!req.files) return next();
-  await Promise.all(
-    req.files.map(async (file) => {
-      await sharp(file.path)
-        .resize(300, 300)
-        .toFormat("jpeg")
-        .jpeg({ quality: 90 })
-        .toFile(`public/images/products/${file.filename}`);
-        fs.unlinkSync(`public/images/products/${file.filename}`)
-    })
-  );
-  next()   
-}; 
+  try {
+    await Promise.all(
+      req.files.map(async (file) => {
+        await sharp(file.path)
+          .resize(300, 300)
+          .toFormat("jpeg")
+          .jpeg({ quality: 90 })
+          .toFile(`public/images/products/${file.filename}`);
+        // Manejo de errores al eliminar el archivo original
+        try {
+          fs.unlinkSync(file.path);
+        } catch (error) {
+          console.error(`Error al eliminar el archivo original: ${error.message}`);
+        }
+      })
+    );
+    next();
+  } catch (error) {
+    console.error(`Error en productImageResize: ${error.message}`);
+    next(error);
+  }
+};
   
 const blogImageResize = async (req, res, next) => {
     if (!req.files) return next(); 
