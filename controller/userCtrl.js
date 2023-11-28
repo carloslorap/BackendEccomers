@@ -262,7 +262,7 @@ const updatePassword = asyncHandler(async (req, res) => {
     res.json(updatePassword);
   } else {
     res.json(user);
-  }
+  } 
 });
 
 const forgotPasswordToken = asyncHandler(async (req, res) => {
@@ -272,7 +272,7 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
   try {
     const token = await user.createPasswordResetToken();
     await user.save();
-    const resetURL = `Hi, please follow this link to reset your password. this link is valid till 10 minute from now. <a href="http://localhost:3000/reset-password/${token}">Click Here</a>`;
+    const resetURL = `Hi, please follow this link to reset your password. this link is valid till 10 minute from now. <a href="https://eccomers-real-life.vercel.app/reset-password/${token}">Click Here</a>`;
     const data = {
       to: email,
       text: "Hey User",
