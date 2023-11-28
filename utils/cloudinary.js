@@ -4,9 +4,11 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure:true
 });
 
 const cloudinaryUploadImg = async (fileToUploads) => {
+try {
   return new Promise((resolve) => {
     cloudinary.uploader.upload(fileToUploads, (result) => {
       resolve(
@@ -21,9 +23,14 @@ const cloudinaryUploadImg = async (fileToUploads) => {
       );
     });
   });
+} catch (error) {
+  console.error('Error in cloudinaryUploadImg:', error);
+  throw error;
+}
 };
 
 const cloudinaryDeleteImg = async (fileToDelete) => { 
+try {
   return new Promise((resolve) => {
     cloudinary.uploader.destroy(fileToDelete, (result) => {
       resolve(
@@ -38,6 +45,10 @@ const cloudinaryDeleteImg = async (fileToDelete) => {
       );
     });
   });
+} catch (error) {
+  console.error('Error in cloudinaryDeleteImg:', error);
+  throw error;
+}
 };
 
 module.exports = { cloudinaryUploadImg, cloudinaryDeleteImg };
