@@ -66,15 +66,19 @@ const getProduct = asyncHandler(async (req, res) => {
 
 const getAllProduct = asyncHandler(async (req, res) => {
   try {
-    //esta parte es para los "FILTROS" ya sea para la longitud de "precios","categoria","color","marca"
     const queryObj = { ...req.query };
     const excludeFields = ["page", "sort", "limit", "fields"];
     excludeFields.forEach((e) => delete queryObj[e]);
+
+    // Convertir el filtro de colores a un array si se proporciona
+    if (queryObj.color) {
+      queryObj.color = { $in: queryObj.color.split(",") };
+    }
+
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     let query = Product.find(JSON.parse(queryStr)).populate("color");
 
-    //Clasificación
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
       query = query.sort(sortBy);
@@ -82,31 +86,30 @@ const getAllProduct = asyncHandler(async (req, res) => {
       query = query.sort("-createdAt");
     }
 
-    //limitando los campos (osea los nombre de los campos que pongamos en la api se mostrara solo esos campos)
     if (req.query.fields) {
       const fields = req.query.fields.split(",").join(" ");
       query = query.select(fields);
     } else {
-      query = query.select("-__v"); 
+      query = query.select("-__v");
     }
 
-    //pagination
     const page = req.query.page;
     const limit = req.query.limit;
     const skip = (page - 1) * limit;
     query = query.skip(skip).limit(limit);
+
     if (req.query.page) {
       const productCount = await Product.countDocuments();
-      if (skip >= productCount) throw new Error("this Page does not exists");
+      if (skip >= productCount) throw new Error("This page does not exist");
     }
 
-    console.log(page, limit, skip);
-    const product = await query;
-    res.json(product);
+    const products = await query;
+    res.json(products);
   } catch (error) {
     throw new Error(error);
   }
 });
+
 
 const addToWishList = asyncHandler(async (req, res) => {
   const { _id } = req.user;
